@@ -1,0 +1,62 @@
+name: Test & Deploy (gated)
+
+# This workflow is OPTIONAL and inactive by default (see DEPLOYMENT.md "Making
+# these actually block a bad deploy" section) — Render and Netlify already
+# auto-deploy on push to main via their own GitHub integration, which is enough
+# for most projects if you pair it with a branch protection rule requiring
+# backend-ci/frontend-ci to pass.
+#
+# Use this instead if you want a single push to main to be IMPOSSIBLE to deploy
+# without tests passing first, even without relying on branch protection. To
+# activate:
+#   1. In Render: service Settings → disable "Auto-Deploy", then Settings →
+#      Deploy Hook to get a webhook URL. Add it as a repo secret named
+#      RENDER_DEPLOY_HOOK.
+#   2. In Netlify: Site settings → Build & deploy → disable auto publishing,
+#      then Build hooks → Add build hook to create one. Add it as a repo secret
+#      named NETLIFY_DEPLOY_HOOK.
+#   3. Uncomment the "push" trigger below.
+
+on:
+  workflow_dispatch: {}
+  # push:
+  #   branches: [main]
+
+jobs:
+  backend-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+      - run: mvn -B verify
+
+  frontend-check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - name: Guard against placeholder config values
+        run: |
+          if grep -q "REPLACE-WITH-YOUR-BACKEND-URL\|pk_test_REPLACE_ME" js/config.js; then
+            echo "::error file=frontend/js/config.js::Placeholder config values found."
+            exit 1
+          fi
+
+  deploy:
+    needs: [backend-test, frontend-check]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Trigger Render deploy
+        run: curl -f -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
+      - name: Trigger Netlify deploy
+        run: curl -f -X POST "${{ secrets.NETLIFY_DEPLOY_HOOK }}"

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TechNexus | Premium Tech Catalog</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Geist:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="js/tailwind-config.js"></script>
+<link rel="stylesheet" href="css/styles.css"/>
+</head>
+<body class="bg-background text-on-surface font-body-md selection:bg-primary-container selection:text-on-primary-container">
+
+<header class="bg-surface shadow-sm sticky top-0 z-50">
+<div class="flex justify-between items-center px-margin-mobile md:px-margin-desktop h-20 w-full max-w-container-max mx-auto">
+<div class="flex items-center gap-gutter">
+<a class="font-headline-md text-headline-md font-bold text-primary" href="index.html">TechNexus</a>
+<nav class="hidden md:flex gap-stack-lg items-center ml-stack-lg">
+<a class="text-primary font-bold border-b-2 border-primary font-body-md text-body-md cursor-pointer" href="index.html">Catalog</a>
+<a class="text-on-secondary-container hover:text-primary-container transition-colors font-body-md text-body-md cursor-pointer" href="orders.html">Orders</a>
+</nav>
+</div>
+<div class="flex items-center gap-gutter flex-1 justify-end">
+<div class="relative w-full max-w-md hidden sm:block">
+<input id="search-input" class="w-full bg-surface-container-low border border-outline-variant rounded-xl px-4 py-2 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all font-body-md" placeholder="Search premium tech..." type="text"/>
+<span class="material-symbols-outlined absolute right-3 top-2.5 text-outline">search</span>
+</div>
+<div class="flex items-center gap-stack-md">
+<a href="cart.html" class="relative p-2 rounded-full hover:bg-surface-variant transition-all cursor-pointer active:scale-95">
+<span class="material-symbols-outlined text-primary">shopping_cart</span>
+<span id="cart-count-badge" class="hidden absolute -top-1 -right-1 bg-tertiary text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full"></span>
+</a>
+<a id="account-link" href="login.html" class="p-2 rounded-full hover:bg-surface-variant transition-all cursor-pointer active:scale-95">
+<span class="material-symbols-outlined text-primary">person</span>
+</a>
+</div>
+</div>
+</div>
+</header>
+
+<main class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-stack-lg flex gap-gutter">
+<aside class="w-64 hidden lg:flex flex-col gap-stack-lg shrink-0">
+<div class="bg-surface-container-lowest p-stack-md rounded-xl border border-outline-variant shadow-sm">
+<h3 class="font-headline-md text-label-sm uppercase tracking-wider mb-stack-md text-on-surface-variant">Categories</h3>
+<div id="category-filters" class="space-y-stack-sm">
+<label class="flex items-center gap-stack-sm cursor-pointer group">
+<input checked class="category-checkbox rounded text-primary focus:ring-primary border-outline-variant" type="checkbox" value="all"/>
+<span class="text-body-md group-hover:text-primary transition-colors">All Categories</span>
+</label>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-stack-md rounded-xl border border-outline-variant shadow-sm">
+<h3 class="font-headline-md text-label-sm uppercase tracking-wider mb-stack-md text-on-surface-variant">Price Range</h3>
+<div class="px-2">
+<input id="price-range" class="w-full h-1.5 bg-surface-container-high rounded-lg appearance-none cursor-pointer accent-primary" max="500000" min="0" step="5000" type="range" value="500000"/>
+<div class="flex justify-between mt-2 text-label-sm text-outline">
+<span>Ksh 0</span>
+<span id="price-range-label">Ksh 500k</span>
+</div>
+</div>
+</div>
+<button class="w-full py-3 bg-surface-variant text-primary font-button rounded-xl hover:bg-primary hover:text-white transition-all active:scale-95" onclick="resetFilters()">
+                Reset Filters
+            </button>
+</aside>
+
+<div class="flex-1">
+<div class="flex justify-between items-center mb-stack-lg">
+<h1 class="font-headline-md text-headline-md text-on-surface">Hardware Catalog</h1>
+<div class="flex items-center gap-stack-sm">
+<span class="text-label-sm text-on-secondary-container">Sort by:</span>
+<select id="sort-select" class="bg-surface border-none text-label-sm font-semibold focus:ring-0 cursor-pointer">
+<option value="featured">Featured</option>
+<option value="price-asc">Price: Low to High</option>
+<option value="price-desc">Price: High to Low</option>
+</select>
+</div>
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-gutter" id="product-grid">
+<div class="skeleton rounded-xl h-72"></div>
+<div class="skeleton rounded-xl h-72"></div>
+<div class="skeleton rounded-xl h-72"></div>
+<div class="skeleton rounded-xl h-72"></div>
+</div>
+
+<div class="hidden flex-col items-center justify-center py-20 text-center" id="empty-state">
+<div class="w-24 h-24 bg-surface-container rounded-full flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-outline text-5xl">search_off</span>
+</div>
+<h3 class="font-headline-md text-headline-md mb-2">No products found</h3>
+<p class="text-on-secondary-container mb-stack-lg max-w-sm mx-auto">We couldn't find any products matching your current filters. Try adjusting your search or category selection.</p>
+<button class="px-8 py-3 bg-primary text-white font-button rounded-xl hover:bg-primary-container transition-all" onclick="resetFilters()">
+                    Reset all filters
+                </button>
+</div>
+</div>
+</main>
+
+<footer class="bg-surface-container-highest w-full py-stack-lg px-margin-mobile md:px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-gutter border-t border-outline-variant mt-20">
+<div class="flex flex-col items-center md:items-start">
+<span class="font-headline-md text-headline-md text-on-surface font-bold">TechNexus</span>
+<p class="font-label-sm text-label-sm text-on-secondary-container mt-1">© 2026 TechNexus Inc. All rights reserved.</p>
+</div>
+<div class="flex flex-wrap justify-center gap-stack-lg">
+<a class="font-label-sm text-label-sm text-on-secondary-container hover:text-primary transition-colors cursor-pointer" href="#">Privacy Policy</a>
+<a class="font-label-sm text-label-sm text-on-secondary-container hover:text-primary transition-colors cursor-pointer" href="#">Terms of Service</a>
+<a class="font-label-sm text-label-sm text-on-secondary-container hover:text-primary transition-colors cursor-pointer" href="#">Contact</a>
+</div>
+</footer>
+
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/products.js"></script>
+</body>
+</html>

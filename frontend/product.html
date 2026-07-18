@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TechNexus | Product Details</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Geist:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="js/tailwind-config.js"></script>
+<link rel="stylesheet" href="css/styles.css"/>
+</head>
+<body class="bg-background text-on-surface font-body-md selection:bg-primary-container selection:text-on-primary-container">
+
+<header class="bg-surface shadow-sm sticky top-0 z-50 border-b border-outline-variant/30">
+<div class="flex justify-between items-center px-margin-mobile md:px-margin-desktop h-20 w-full max-w-container-max mx-auto">
+<div class="flex items-center gap-stack-lg">
+<a class="font-headline-md text-headline-md font-bold text-primary tracking-tight" href="index.html">TechNexus</a>
+<nav class="hidden md:flex items-center gap-gutter ml-8">
+<a class="font-body-md text-body-md text-on-secondary-container hover:text-primary-container transition-colors font-bold border-b-2 border-primary pb-1" href="index.html">Catalog</a>
+<a class="font-body-md text-body-md text-on-secondary-container hover:text-primary-container transition-colors" href="orders.html">Orders</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<a href="cart.html" class="relative material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors cursor-pointer p-2 rounded-full hover:bg-surface-variant">
+shopping_cart
+<span id="cart-count-badge" class="hidden absolute -top-1 -right-1 bg-tertiary text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full"></span>
+</a>
+<a id="account-link" href="login.html" class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors cursor-pointer p-2 rounded-full hover:bg-surface-variant">person</a>
+</div>
+</div>
+</header>
+
+<main class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-stack-lg">
+<nav class="flex items-center gap-2 mb-stack-lg text-label-sm text-on-secondary-container">
+<a class="hover:text-primary" href="index.html">Home</a>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<span id="breadcrumb-category" class="text-on-surface font-medium"></span>
+</nav>
+
+<div id="product-detail-root" class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-start">
+<div class="lg:col-span-7 space-y-stack-md">
+<div class="skeleton aspect-[4/3] rounded-xl"></div>
+</div>
+<div class="lg:col-span-5 space-y-stack-md">
+<div class="skeleton h-6 w-32 rounded"></div>
+<div class="skeleton h-10 w-3/4 rounded"></div>
+<div class="skeleton h-24 w-full rounded"></div>
+</div>
+</div>
+</main>
+
+<footer class="bg-surface-container-highest w-full py-stack-lg px-margin-mobile md:px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-gutter border-t border-outline-variant/20 mt-20">
+<span class="font-headline-md text-headline-md text-on-surface font-bold tracking-tight">TechNexus</span>
+<p class="font-label-sm text-label-sm text-on-secondary-container opacity-80">© 2026 TechNexus Inc. All rights reserved.</p>
+</footer>
+
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/ui.js"></script>
+<script>
+async function initProductDetail() {
+  const params = new URLSearchParams(window.location.search);
+  const productId = params.get('id');
+  const root = document.getElementById('product-detail-root');
+
+  if (!productId) {
+    root.innerHTML = `<p class="col-span-full text-center text-on-secondary-container py-20">No product specified.</p>`;
+    return;
+  }
+
+  try {
+    const p = await Api.getProduct(productId);
+    document.title = `${p.name} | TechNexus`;
+    document.getElementById('breadcrumb-category').textContent = p.name;
+
+    const outOfStock = p.stockQuantity <= 0;
+    const lowStock = p.stockQuantity > 0 && p.stockQuantity <= 5;
+    const imgUrl = `https://source.unsplash.com/700x700/?${encodeURIComponent(p.categoryName || 'tech')},gadget&sig=${p.id}`;
+
+    root.innerHTML = `
+      <div class="lg:col-span-7 space-y-stack-md">
+        <div class="aspect-[4/3] rounded-xl overflow-hidden bg-surface-container-low border border-outline-variant/20 shadow-sm">
+          <img class="w-full h-full object-cover" src="${imgUrl}" alt="${p.name}"/>
+        </div>
+      </div>
+
+      <div class="lg:col-span-5 flex flex-col gap-stack-md sticky top-24">
+        <div>
+          <span class="inline-block px-3 py-1 bg-secondary-container text-on-secondary-container text-label-sm rounded-full mb-stack-sm">${p.categoryName || 'Hardware'}</span>
+          <h1 class="font-display-lg text-display-lg-mobile md:text-display-lg leading-tight text-on-surface mb-2">${p.name}</h1>
+          <p class="text-label-sm text-on-secondary-container">SKU: ${p.sku}</p>
+        </div>
+
+        <div class="flex items-center gap-gutter py-2">
+          <div class="flex flex-col">
+            <span class="text-label-sm text-outline font-medium">Price</span>
+            <span class="font-display-lg text-primary text-3xl font-bold">${formatCents(p.priceCents)}</span>
+          </div>
+          <div class="h-12 w-[1px] bg-outline-variant"></div>
+          <div class="flex flex-col">
+            <span class="text-label-sm text-outline font-medium">Availability</span>
+            ${outOfStock
+              ? `<div class="flex items-center gap-1.5 text-error font-bold"><span class="material-symbols-outlined text-[18px]">error</span><span class="text-label-sm">Out of Stock</span></div>`
+              : lowStock
+              ? `<div class="flex items-center gap-1.5 text-error font-bold"><span class="material-symbols-outlined text-[18px]">error</span><span class="text-label-sm">Low Stock (only ${p.stockQuantity} left)</span></div>`
+              : `<div class="flex items-center gap-1.5 text-tertiary font-bold"><span class="material-symbols-outlined text-[18px]">check_circle</span><span class="text-label-sm">In Stock</span></div>`}
+          </div>
+        </div>
+
+        <div class="bg-surface-container p-stack-md rounded-xl space-y-stack-sm border border-outline-variant/30">
+          <p class="font-label-sm text-on-surface uppercase tracking-wider opacity-70 mb-2">Details</p>
+          <p class="text-body-md text-on-surface-variant leading-relaxed">${p.description || 'No description available for this product yet.'}</p>
+        </div>
+
+        <div class="space-y-4 pt-4">
+          <div class="flex items-center gap-gutter">
+            <div class="flex flex-col gap-1">
+              <label class="text-label-sm font-semibold">Quantity</label>
+              <div class="flex items-center border border-outline-variant rounded-lg bg-white overflow-hidden w-fit">
+                <button id="qty-minus" class="px-4 py-2 hover:bg-surface-container transition-colors text-on-surface">
+                  <span class="material-symbols-outlined text-[20px]">remove</span>
+                </button>
+                <span id="qty-value" class="w-12 text-center font-bold">1</span>
+                <button id="qty-plus" class="px-4 py-2 hover:bg-surface-container transition-colors text-on-surface">
+                  <span class="material-symbols-outlined text-[20px]">add</span>
+                </button>
+              </div>
+            </div>
+            <div class="flex-grow flex flex-col gap-1">
+              <label class="opacity-0 text-label-sm">Action</label>
+              <button id="add-to-cart-btn" ${outOfStock ? 'disabled' : ''}
+                class="w-full bg-primary-container text-on-primary-container py-4 rounded-xl font-button text-button shadow-md hover:bg-primary transition-all active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed">
+                <span class="material-symbols-outlined">shopping_bag</span>
+                ${outOfStock ? 'Out of Stock' : 'Add to Cart'}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-stack-md flex items-center gap-6 border-t border-outline-variant/30">
+          <div class="flex items-center gap-2 text-label-sm">
+            <span class="material-symbols-outlined text-primary">verified</span>
+            <span>Secure checkout</span>
+          </div>
+          <div class="flex items-center gap-2 text-label-sm">
+            <span class="material-symbols-outlined text-primary">local_shipping</span>
+            <span>Fast delivery</span>
+          </div>
+        </div>
+      </div>
+    `;
+
+    let qty = 1;
+    const stock = p.stockQuantity;
+    const qtyValueEl = document.getElementById('qty-value');
+
+    document.getElementById('qty-minus').addEventListener('click', () => {
+      if (qty > 1) { qty--; qtyValueEl.textContent = qty; }
+    });
+    document.getElementById('qty-plus').addEventListener('click', () => {
+      if (qty < stock) { qty++; qtyValueEl.textContent = qty; }
+      else showToast("That's all the stock we have", 'error');
+    });
+
+    document.getElementById('add-to-cart-btn')?.addEventListener('click', async () => {
+      if (!Auth.isLoggedIn()) {
+        window.location.href = 'login.html';
+        return;
+      }
+      try {
+        await Api.addOrUpdateCartItem(p.id, qty);
+        showToast(`Added ${qty} × ${p.name} to cart`, 'success');
+        refreshCartCount();
+      } catch (err) {
+        showToast(err.message || 'Could not add to cart', 'error');
+      }
+    });
+
+  } catch (err) {
+    root.innerHTML = `<p class="col-span-full text-center text-on-secondary-container py-20">Product not found.</p>`;
+  }
+}
+
+document.addEventListener('DOMContentLoaded', initProductDetail);
+</script>
+</body>
+</html>

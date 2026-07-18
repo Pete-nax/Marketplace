@@ -1,0 +1,13 @@
+[build]
+  publish = "."
+  command = ""
+
+# Netlify serves clean URLs (no .html) by default — no extra config needed
+# for /login instead of /login.html.
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"

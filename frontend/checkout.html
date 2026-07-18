@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TechNexus | Checkout</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Geist:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="js/tailwind-config.js"></script>
+<link rel="stylesheet" href="css/styles.css"/>
+<script src="https://js.stripe.com/v3/"></script>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md">
+
+<header class="bg-surface shadow-sm sticky top-0 z-50">
+<nav class="flex justify-between items-center px-margin-mobile md:px-margin-desktop h-20 w-full max-w-container-max mx-auto">
+<span class="font-headline-md text-headline-md font-bold text-primary">TechNexus</span>
+<a href="cart.html" class="material-symbols-outlined p-2 cursor-pointer hover:bg-surface-variant rounded-full transition-colors">arrow_back</a>
+</nav>
+</header>
+
+<main class="flex-grow w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-stack-lg">
+
+<section class="step-transition" id="checkout-main">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<div class="lg:col-span-7 space-y-stack-lg">
+<div class="bg-surface-container-lowest p-stack-md md:p-stack-lg border border-outline-variant rounded-xl shadow-sm">
+<h2 class="font-headline-md text-headline-md mb-stack-md text-on-surface">Shipping Address</h2>
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Delivery Address</label>
+<textarea id="shipping-address" rows="3" class="p-3 border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all resize-none" placeholder="Street, city, postal code, country"></textarea>
+</div>
+</div>
+
+<div class="bg-surface-container-lowest p-stack-md md:p-stack-lg border border-outline-variant rounded-xl shadow-sm">
+<div class="flex justify-between items-center mb-stack-md">
+<h2 class="font-headline-md text-headline-md text-on-surface">Payment Method</h2>
+<span class="material-symbols-outlined text-outline">credit_card</span>
+</div>
+<div id="payment-element" class="min-h-[120px] flex items-center justify-center">
+<span class="text-sm text-on-secondary-container">Loading payment form…</span>
+</div>
+<p id="payment-error" class="text-sm text-error mt-3 hidden"></p>
+<button id="pay-btn" class="w-full mt-stack-lg py-4 bg-primary-container text-on-primary-container font-button text-button rounded-lg shadow-md hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+Start Checkout
+</button>
+</div>
+</div>
+
+<aside class="lg:col-span-5">
+<div class="bg-surface-container-high p-stack-md md:p-stack-lg border border-outline-variant rounded-xl sticky top-24">
+<h3 class="font-headline-md text-headline-md mb-stack-md text-on-surface">Order Summary</h3>
+<div id="summary-items" class="space-y-4 mb-4">
+<div class="skeleton h-16 rounded-lg"></div>
+</div>
+<div class="space-y-2 py-4 border-t border-outline-variant/30">
+<div class="flex justify-between text-on-surface-variant">
+<span>Subtotal</span>
+<span id="summary-subtotal">Ksh 0.00</span>
+</div>
+</div>
+<div class="flex justify-between items-center pt-4 border-t border-outline-variant text-on-surface">
+<span class="font-headline-md text-headline-md">Total</span>
+<span id="summary-total" class="font-headline-md text-headline-md text-primary">Ksh 0.00</span>
+</div>
+</div>
+</aside>
+</div>
+</section>
+
+<section class="hidden step-transition py-32 flex flex-col items-center justify-center text-center" id="checkout-loading">
+<div class="spinner mb-stack-lg"></div>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-2" id="loading-title">Processing…</h2>
+<p class="text-on-surface-variant font-body-md max-w-sm">Please do not refresh the page while we securely process your transaction.</p>
+</section>
+
+<section class="hidden step-transition py-24 max-w-2xl mx-auto flex flex-col items-center text-center" id="checkout-success">
+<div class="w-20 h-20 bg-primary-container/10 text-primary rounded-full flex items-center justify-center mb-stack-lg">
+<span class="material-symbols-outlined text-5xl">check_circle</span>
+</div>
+<h1 class="font-display-lg text-display-lg text-on-surface mb-2">Order Confirmed!</h1>
+<p class="font-headline-md text-headline-md text-primary mb-stack-md" id="success-order-id"></p>
+<p class="text-on-surface-variant font-body-lg mb-stack-lg">Thank you for your purchase. We'll email you a confirmation and shipping timeline shortly.</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+<a href="orders.html" class="py-4 border-2 border-primary text-primary font-button rounded-lg hover:bg-primary-container/5 transition-all">View Order</a>
+<a href="index.html" class="py-4 bg-primary text-on-primary font-button rounded-lg shadow-lg hover:shadow-xl active:scale-95 transition-all">Continue Shopping</a>
+</div>
+</section>
+
+<section class="hidden step-transition py-24 max-w-xl mx-auto flex flex-col items-center text-center" id="checkout-error">
+<div class="w-20 h-20 bg-error-container text-error rounded-full flex items-center justify-center mb-stack-lg">
+<span class="material-symbols-outlined text-5xl">error</span>
+</div>
+<h1 class="font-headline-md text-headline-md text-on-error-container mb-2">Payment Failed</h1>
+<p class="text-on-surface-variant font-body-md mb-stack-lg" id="error-message">We were unable to process your payment.</p>
+<button id="retry-btn" class="w-full py-4 bg-primary text-on-primary font-button rounded-lg shadow-md hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">refresh</span>
+Retry Payment
+</button>
+</section>
+
+</main>
+
+<footer class="bg-surface-container-highest w-full py-stack-lg px-margin-mobile md:px-margin-desktop mt-auto">
+<div class="max-w-container-max mx-auto flex flex-col md:flex-row justify-between items-center gap-gutter">
+<span class="font-headline-md text-headline-md text-on-surface font-bold">TechNexus</span>
+<p class="font-label-sm text-label-sm text-on-secondary-container">© 2026 TechNexus Inc. All rights reserved.</p>
+</div>
+</footer>
+
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/ui.js"></script>
+<script>
+let stripe, elements, currentOrderId, currentClientSecret;
+
+function showSection(id) {
+  ['checkout-main', 'checkout-loading', 'checkout-success', 'checkout-error'].forEach(s => {
+    document.getElementById(s).classList.toggle('hidden', s !== id);
+  });
+  window.scrollTo(0, 0);
+}
+
+async function loadSummary() {
+  try {
+    const items = await Api.getCart();
+    if (items.length === 0) {
+      window.location.href = 'index.html';
+      return;
+    }
+    const subtotal = items.reduce((sum, i) => sum + i.lineTotalCents, 0);
+
+    document.getElementById('summary-items').innerHTML = items.map(i => `
+      <div class="flex gap-stack-md pb-4 border-b border-outline-variant/30">
+        <div class="w-16 h-16 rounded-lg overflow-hidden bg-surface flex-shrink-0">
+          <img class="w-full h-full object-cover" src="https://source.unsplash.com/80x80/?tech,gadget&sig=${i.productId}" alt="${i.productName}"/>
+        </div>
+        <div class="flex-grow">
+          <p class="font-body-md text-on-surface font-semibold">${i.productName}</p>
+          <p class="text-on-surface-variant text-label-sm">Qty ${i.quantity}</p>
+          <p class="mt-1 font-body-md text-primary">${formatCents(i.lineTotalCents)}</p>
+        </div>
+      </div>
+    `).join('');
+
+    document.getElementById('summary-subtotal').textContent = formatCents(subtotal);
+    document.getElementById('summary-total').textContent = formatCents(subtotal);
+  } catch (err) {
+    showToast(err.message || 'Could not load your cart', 'error');
+  }
+}
+
+async function beginCheckout() {
+  const address = document.getElementById('shipping-address').value.trim();
+  const errorEl = document.getElementById('payment-error');
+  errorEl.classList.add('hidden');
+
+  if (!address) {
+    showToast('Add a shipping address to continue', 'error');
+    return;
+  }
+
+  const payBtn = document.getElementById('pay-btn');
+  payBtn.disabled = true;
+
+  try {
+    // Atomically reserves stock server-side and creates the Stripe PaymentIntent
+    const res = await Api.checkout(address);
+    currentOrderId = res.orderId;
+    currentClientSecret = res.clientSecret;
+
+    stripe = Stripe(window.STRIPE_PUBLISHABLE_KEY);
+    elements = stripe.elements({ clientSecret: currentClientSecret });
+    const paymentElement = elements.create('payment');
+    document.getElementById('payment-element').innerHTML = '';
+    paymentElement.mount('#payment-element');
+
+    payBtn.textContent = 'Pay Now';
+    payBtn.onclick = confirmPayment;
+    payBtn.disabled = false;
+  } catch (err) {
+    payBtn.disabled = false;
+    errorEl.textContent = err.message || 'Could not start checkout — please try again.';
+    errorEl.classList.remove('hidden');
+    if (err.status === 409) {
+      showToast('One item just sold out. Update your cart and try again.', 'error');
+    }
+  }
+}
+
+async function confirmPayment() {
+  document.getElementById('loading-title').textContent = 'Processing Payment…';
+  showSection('checkout-loading');
+
+  const { error } = await stripe.confirmPayment({
+    elements,
+    confirmParams: { return_url: window.location.href },
+    redirect: 'if_required',
+  });
+
+  if (error) {
+    document.getElementById('error-message').textContent = error.message || 'We were unable to process your payment.';
+    showSection('checkout-error');
+    return;
+  }
+
+  // Payment confirmed client-side. The order becomes PAID once Stripe's
+  // webhook reaches the backend — usually within a second or two.
+  document.getElementById('success-order-id').textContent = `Order #${currentOrderId}`;
+  showSection('checkout-success');
+}
+
+document.getElementById('retry-btn').addEventListener('click', () => showSection('checkout-main'));
+document.getElementById('pay-btn').addEventListener('click', beginCheckout);
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (!Auth.isLoggedIn()) {
+    window.location.href = 'login.html?next=checkout.html';
+    return;
+  }
+  showSection('checkout-main');
+  loadSummary();
+});
+</script>
+</body>
+</html>

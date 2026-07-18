@@ -1,0 +1,40 @@
+name: Backend CI
+
+on:
+  push:
+    branches: [main]
+    paths: ["backend/**"]
+  pull_request:
+    branches: [main]
+    paths: ["backend/**"]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+
+      # Testcontainers spins up its own throwaway Postgres per test class using
+      # the Docker daemon that's already installed on GitHub-hosted runners —
+      # no separate "services:" Postgres container needed here.
+      - name: Run tests
+        run: mvn -B verify
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-test-reports
+          path: backend/target/surefire-reports/
+          retention-days: 5

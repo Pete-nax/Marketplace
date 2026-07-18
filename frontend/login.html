@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TechNexus | Authentication</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Geist:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="js/tailwind-config.js"></script>
+<link rel="stylesheet" href="css/styles.css"/>
+</head>
+<body class="bg-background min-h-screen flex flex-col font-body-md text-on-surface">
+
+<div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+<div class="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] bg-surface-variant/30 rounded-full blur-[120px]"></div>
+<div class="absolute -bottom-[10%] -right-[5%] w-[40%] h-[40%] bg-primary-container/5 rounded-full blur-[100px]"></div>
+</div>
+
+<main class="flex-grow flex items-center justify-center p-margin-mobile md:p-margin-desktop z-10 relative">
+<div class="w-full max-w-[440px]">
+<a href="index.html" class="flex flex-col items-center mb-stack-lg">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-primary text-4xl" style="font-variation-settings: 'FILL' 1;">terminal</span>
+<h1 class="font-headline-md text-headline-md text-on-surface font-extrabold tracking-tighter">TechNexus</h1>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Global Hardware Ecosystem</p>
+</a>
+
+<section class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-8 shadow-sm fade-in" id="login-section">
+<div class="mb-stack-md">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-1">Welcome back</h2>
+<p class="font-body-md text-on-surface-variant">Enter your credentials to access your account.</p>
+</div>
+<div id="login-error" class="hidden bg-error-container text-on-error-container p-3 rounded-lg flex items-center gap-3 mb-6 border border-error/10">
+<span class="material-symbols-outlined text-[20px]">report</span>
+<p id="login-error-text" class="font-label-sm text-label-sm">Invalid credentials. Please try again.</p>
+</div>
+<form id="login-form" class="space-y-5">
+<div class="space-y-2">
+<label class="font-label-sm text-label-sm text-on-surface-variant block" for="email">Email Address</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">mail</span>
+<input class="w-full pl-10 pr-4 py-3 bg-white border border-outline-variant rounded-lg text-body-md focus:border-primary transition-all duration-200" id="email" placeholder="name@company.com" type="email" required/>
+</div>
+</div>
+<div class="space-y-2">
+<label class="font-label-sm text-label-sm text-on-surface-variant" for="password">Password</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">lock</span>
+<input class="w-full pl-10 pr-4 py-3 bg-white border border-outline-variant rounded-lg text-body-md focus:border-primary transition-all duration-200" id="password" placeholder="••••••••" type="password" required/>
+</div>
+</div>
+<button id="login-submit-btn" class="w-full bg-primary-container text-on-primary-container font-button text-button py-3.5 rounded-lg shadow-sm hover:bg-primary transition-all active:scale-[0.98] mt-4" type="submit">
+Sign In
+</button>
+</form>
+<div class="mt-8 pt-8 border-t border-outline-variant/30 text-center">
+<p class="font-body-md text-on-surface-variant">
+Don't have an account?
+<button class="text-primary font-bold hover:underline ml-1" onclick="toggleAuth('register')" type="button">Register</button>
+</p>
+</div>
+</section>
+
+<section class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-8 shadow-sm hidden-auth" id="register-section">
+<div class="mb-stack-md">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-1">Create account</h2>
+<p class="font-body-md text-on-surface-variant">Join TechNexus for professional hardware solutions.</p>
+</div>
+<div id="register-error" class="hidden bg-error-container text-on-error-container p-3 rounded-lg flex items-center gap-3 mb-6 border border-error/10">
+<span class="material-symbols-outlined text-[20px]">report</span>
+<p id="register-error-text" class="font-label-sm text-label-sm"></p>
+</div>
+<form id="register-form" class="space-y-4">
+<div class="space-y-1.5">
+<label class="font-label-sm text-label-sm text-on-surface-variant block" for="reg-name">Full Name</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]">person</span>
+<input class="w-full pl-10 pr-4 py-2.5 bg-white border border-outline-variant rounded-lg text-body-md focus:border-primary transition-all" id="reg-name" placeholder="John Doe" type="text" required/>
+</div>
+</div>
+<div class="space-y-1.5">
+<label class="font-label-sm text-label-sm text-on-surface-variant block" for="reg-email">Email Address</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]">mail</span>
+<input class="w-full pl-10 pr-4 py-2.5 bg-white border border-outline-variant rounded-lg text-body-md focus:border-primary transition-all" id="reg-email" placeholder="name@company.com" type="email" required/>
+</div>
+</div>
+<div class="space-y-1.5">
+<label class="font-label-sm text-label-sm text-on-surface-variant block" for="reg-password">Password</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]">lock</span>
+<input class="w-full pl-10 pr-4 py-2.5 bg-white border border-outline-variant rounded-lg text-body-md focus:border-primary transition-all" id="reg-password" placeholder="At least 8 characters" type="password" minlength="8" required/>
+</div>
+</div>
+<div class="space-y-1.5">
+<label class="font-label-sm text-label-sm text-on-surface-variant block" for="reg-confirm">Confirm Password</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]">lock_reset</span>
+<input class="w-full pl-10 pr-4 py-2.5 bg-white border border-outline-variant rounded-lg text-body-md focus:border-primary transition-all" id="reg-confirm" placeholder="••••••••" type="password" minlength="8" required/>
+</div>
+</div>
+<button id="register-submit-btn" class="w-full bg-primary-container text-on-primary-container font-button text-button py-3.5 rounded-lg shadow-sm hover:bg-primary transition-all active:scale-[0.98] mt-2" type="submit">
+Get Started
+</button>
+</form>
+<div class="mt-6 pt-6 border-t border-outline-variant/30 text-center">
+<p class="font-body-md text-on-surface-variant">
+Already have an account?
+<button class="text-primary font-bold hover:underline ml-1" onclick="toggleAuth('login')" type="button">Log in</button>
+</p>
+</div>
+</section>
+</div>
+</main>
+
+<footer class="w-full py-stack-lg px-margin-mobile md:px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-gutter z-10 relative opacity-60">
+<p class="font-label-sm text-label-sm text-on-secondary-container">© 2026 TechNexus Inc. All rights reserved.</p>
+</footer>
+
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script>
+function toggleAuth(view) {
+  const loginSection = document.getElementById('login-section');
+  const registerSection = document.getElementById('register-section');
+  if (view === 'register') {
+    loginSection.classList.add('hidden-auth');
+    registerSection.classList.remove('hidden-auth');
+    registerSection.classList.add('fade-in');
+  } else {
+    registerSection.classList.add('hidden-auth');
+    loginSection.classList.remove('hidden-auth');
+    loginSection.classList.add('fade-in');
+  }
+}
+
+function redirectAfterAuth() {
+  const params = new URLSearchParams(window.location.search);
+  window.location.href = params.get('next') || 'index.html';
+}
+
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('login-submit-btn');
+  const errorBox = document.getElementById('login-error');
+  errorBox.classList.add('hidden');
+  btn.disabled = true;
+  btn.textContent = 'Signing in…';
+
+  try {
+    const res = await Api.login({
+      email: document.getElementById('email').value.trim(),
+      password: document.getElementById('password').value,
+    });
+    Auth.setSession(res);
+    redirectAfterAuth();
+  } catch (err) {
+    document.getElementById('login-error-text').textContent = err.message || 'Invalid email or password';
+    errorBox.classList.remove('hidden');
+    btn.disabled = false;
+    btn.textContent = 'Sign In';
+  }
+});
+
+document.getElementById('register-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('register-submit-btn');
+  const errorBox = document.getElementById('register-error');
+  errorBox.classList.add('hidden');
+
+  const password = document.getElementById('reg-password').value;
+  const confirmPassword = document.getElementById('reg-confirm').value;
+
+  if (password !== confirmPassword) {
+    document.getElementById('register-error-text').textContent = 'Passwords do not match';
+    errorBox.classList.remove('hidden');
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Creating account…';
+
+  try {
+    const res = await Api.register({
+      fullName: document.getElementById('reg-name').value.trim(),
+      email: document.getElementById('reg-email').value.trim(),
+      password,
+    });
+    Auth.setSession(res);
+    redirectAfterAuth();
+  } catch (err) {
+    document.getElementById('register-error-text').textContent = err.message || 'Could not create account';
+    errorBox.classList.remove('hidden');
+    btn.disabled = false;
+    btn.textContent = 'Get Started';
+  }
+});
+
+// Support entering directly on the register view via ?mode=register
+document.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('mode') === 'register') toggleAuth('register');
+});
+</script>
+</body>
+</html>

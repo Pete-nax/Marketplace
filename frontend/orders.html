@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TechNexus | Order History</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Geist:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="js/tailwind-config.js"></script>
+<link rel="stylesheet" href="css/styles.css"/>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col">
+
+<header class="bg-surface shadow-sm sticky top-0 z-50">
+<div class="flex justify-between items-center px-margin-mobile md:px-margin-desktop h-20 w-full max-w-container-max mx-auto">
+<div class="flex items-center gap-gutter">
+<a href="index.html" class="font-headline-md text-headline-md font-bold text-primary cursor-pointer">TechNexus</a>
+<nav class="hidden md:flex gap-stack-lg items-center">
+<a class="font-body-md text-body-md text-on-secondary-container hover:text-primary-container transition-colors" href="index.html">Catalog</a>
+</nav>
+</div>
+<div class="flex items-center gap-stack-sm">
+<a href="cart.html" class="relative material-symbols-outlined text-on-surface cursor-pointer p-2 hover:bg-surface-variant rounded-full transition-colors">
+shopping_cart
+<span id="cart-count-badge" class="hidden absolute top-0 right-0 bg-tertiary text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full"></span>
+</a>
+<span class="material-symbols-outlined text-primary font-bold p-2 bg-primary-container/10 rounded-full">person</span>
+</div>
+</div>
+</header>
+
+<main class="flex-grow w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-stack-lg flex flex-col lg:flex-row gap-gutter">
+<aside class="w-full lg:w-64 flex-shrink-0">
+<div class="bg-surface-container-low rounded-xl border border-outline-variant overflow-hidden">
+<div class="p-stack-md border-b border-outline-variant">
+<div class="flex items-center gap-stack-md">
+<div id="user-initials" class="w-12 h-12 rounded-full overflow-hidden bg-primary-container flex items-center justify-center text-white font-bold">--</div>
+<div>
+<h3 id="user-name" class="font-label-sm text-label-sm font-bold text-on-surface">—</h3>
+<p id="user-email" class="text-xs text-on-surface-variant">—</p>
+</div>
+</div>
+</div>
+<nav class="p-2 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg bg-primary-container text-on-primary-container font-bold font-label-sm text-label-sm" href="orders.html">
+<span class="material-symbols-outlined">receipt_long</span>
+Order History
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-variant transition-all font-label-sm text-label-sm" href="index.html">
+<span class="material-symbols-outlined">storefront</span>
+Back to Catalog
+</a>
+<button id="logout-btn" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-variant transition-all font-label-sm text-label-sm text-left">
+<span class="material-symbols-outlined">logout</span>
+Log Out
+</button>
+</nav>
+</div>
+</aside>
+
+<section class="flex-grow">
+<div class="mb-stack-lg">
+<h1 class="font-display-lg text-display-lg mb-2">Order History</h1>
+<p class="text-on-surface-variant">Manage and track your recent and past technology purchases.</p>
+</div>
+
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-sm">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">
+<th class="px-6 py-4 font-semibold">Order ID</th>
+<th class="px-6 py-4 font-semibold">Date</th>
+<th class="px-6 py-4 font-semibold">Status</th>
+<th class="px-6 py-4 font-semibold">Total</th>
+<th class="px-6 py-4 font-semibold text-right">Actions</th>
+</tr>
+</thead>
+<tbody id="orders-body" class="divide-y divide-outline-variant">
+<tr><td colspan="5" class="px-6 py-8 text-center text-on-secondary-container">Loading…</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="orders-empty" class="hidden flex-col items-center text-center py-20">
+<h3 class="font-headline-md text-headline-md mb-2">No orders yet</h3>
+<p class="text-on-secondary-container mb-stack-lg">When you check out, your orders will show up here.</p>
+<a href="index.html" class="inline-block bg-primary text-white px-6 py-3 rounded-xl font-button">Start Shopping</a>
+</div>
+</section>
+</main>
+
+<footer class="bg-surface-container-highest mt-auto">
+<div class="w-full py-stack-lg px-margin-mobile md:px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-gutter max-w-container-max mx-auto">
+<span class="font-headline-md text-headline-md text-on-surface font-bold">TechNexus</span>
+<p class="text-on-secondary-container text-label-sm font-label-sm">© 2026 TechNexus Inc. All rights reserved.</p>
+</div>
+</footer>
+
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/ui.js"></script>
+<script>
+const statusClass = (status) => ({
+  PENDING: 'status-amber', PAID: 'status-green', SHIPPED: 'status-blue',
+  DELIVERED: 'status-green', CANCELLED: 'status-red', FAILED: 'status-red',
+}[status] || 'status-amber');
+
+function orderRowHtml(o, index) {
+  const detailId = `order-detail-${o.id}`;
+  const date = new Date(o.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+
+  const itemsHtml = o.items.map(i => `
+    <div class="flex items-center gap-4">
+      <div class="w-16 h-16 bg-surface rounded-lg border border-outline-variant p-2 flex items-center justify-center overflow-hidden">
+        <img class="max-h-full object-contain" src="https://source.unsplash.com/64x64/?tech,gadget&sig=${i.productId}" alt="${i.productName}"/>
+      </div>
+      <div class="flex-grow">
+        <p class="font-bold text-on-surface">${i.productName}</p>
+        <p class="text-sm text-on-surface-variant">Qty ${i.quantity}</p>
+      </div>
+      <p class="font-bold text-on-surface">${formatCents(i.unitPriceCents * i.quantity)}</p>
+    </div>
+  `).join('');
+
+  return `
+    <tr class="order-row transition-all">
+      <td class="px-6 py-5 font-medium text-primary">#${o.id}</td>
+      <td class="px-6 py-5 text-on-surface-variant">${date}</td>
+      <td class="px-6 py-5">
+        <span class="${statusClass(o.status)} px-3 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1">${o.status}</span>
+      </td>
+      <td class="px-6 py-5 font-bold text-on-surface">${formatCents(o.totalAmountCents)}</td>
+      <td class="px-6 py-5 text-right">
+        <button class="toggle-details text-primary hover:underline font-button text-button inline-flex items-center gap-1" data-target="${detailId}">
+          Details <span class="material-symbols-outlined text-sm">expand_more</span>
+        </button>
+      </td>
+    </tr>
+    <tr class="hidden bg-surface-container-low transition-all" id="${detailId}">
+      <td class="px-6 py-8" colspan="5">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-stack-lg">
+          <div>
+            <h4 class="font-bold text-on-surface mb-stack-md flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary">inventory_2</span> Items Ordered
+            </h4>
+            <div class="space-y-4">${itemsHtml}</div>
+          </div>
+          <div>
+            <h4 class="font-bold text-on-surface mb-stack-md flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary">local_shipping</span> Shipping Address
+            </h4>
+            <p class="text-on-surface-variant text-sm">${o.shippingAddress || 'No address on file'}</p>
+          </div>
+        </div>
+      </td>
+    </tr>
+  `;
+}
+
+async function loadOrders() {
+  if (!Auth.isLoggedIn()) {
+    window.location.href = 'login.html?next=orders.html';
+    return;
+  }
+
+  const user = Auth.getUser();
+  if (user) {
+    document.getElementById('user-name').textContent = user.email.split('@')[0];
+    document.getElementById('user-email').textContent = user.email;
+    document.getElementById('user-initials').textContent = user.email.slice(0, 2).toUpperCase();
+  }
+
+  const tbody = document.getElementById('orders-body');
+  const empty = document.getElementById('orders-empty');
+
+  try {
+    const orders = await Api.myOrders();
+
+    if (orders.length === 0) {
+      document.querySelector('table').closest('div.bg-surface-container-lowest').classList.add('hidden');
+      empty.classList.remove('hidden');
+      empty.classList.add('flex');
+      return;
+    }
+
+    tbody.innerHTML = orders.map(orderRowHtml).join('');
+
+    document.querySelectorAll('.toggle-details').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const row = document.getElementById(btn.dataset.target);
+        const icon = btn.querySelector('.material-symbols-outlined');
+        row.classList.toggle('hidden');
+        icon.textContent = row.classList.contains('hidden') ? 'expand_more' : 'expand_less';
+      });
+    });
+  } catch (err) {
+    tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-on-secondary-container">Couldn't load your orders.</td></tr>`;
+  }
+}
+
+document.getElementById('logout-btn').addEventListener('click', () => {
+  Auth.clearSession();
+  window.location.href = 'index.html';
+});
+
+document.addEventListener('DOMContentLoaded', loadOrders);
+</script>
+</body>
+</html>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TechNexus | Shopping Cart</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Geist:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="js/tailwind-config.js"></script>
+<link rel="stylesheet" href="css/styles.css"/>
+</head>
+<body class="font-body-md text-body-md antialiased bg-background text-on-surface">
+
+<header class="bg-surface shadow-sm sticky top-0 z-50">
+<nav class="flex justify-between items-center px-margin-mobile md:px-margin-desktop h-20 w-full max-w-container-max mx-auto">
+<a href="index.html" class="font-headline-md text-headline-md font-bold text-primary cursor-pointer active:scale-95 transition-transform">TechNexus</a>
+<div class="hidden md:flex items-center gap-gutter font-body-md text-body-md">
+<a class="text-on-secondary-container hover:text-primary-container transition-colors" href="index.html">Catalog</a>
+<a class="text-on-secondary-container hover:text-primary-container transition-colors" href="orders.html">Orders</a>
+</div>
+<div class="flex items-center gap-stack-md">
+<div class="relative">
+<span class="material-symbols-outlined p-2 text-primary font-bold border-b-2 border-primary cursor-pointer">shopping_cart</span>
+<span id="cart-count-badge" class="hidden absolute top-0 right-0 bg-tertiary text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full"></span>
+</div>
+<a id="account-link" href="login.html" class="material-symbols-outlined p-2 text-on-surface cursor-pointer hover:bg-surface-variant rounded-full transition-all active:scale-95">person</a>
+</div>
+</nav>
+</header>
+
+<main class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-stack-lg min-h-[calc(100vh-200px)]">
+<div class="mb-stack-lg">
+<h1 class="font-display-lg text-display-lg mb-2">Your Shopping Cart</h1>
+<p class="text-on-secondary-container font-body-md">Review your selections before proceeding to checkout.</p>
+</div>
+
+<div id="cart-loading" class="grid grid-cols-1 gap-stack-md">
+<div class="skeleton h-24 rounded-xl"></div>
+<div class="skeleton h-24 rounded-xl"></div>
+</div>
+
+<div class="hidden grid-cols-1 lg:grid-cols-12 gap-gutter" id="cart-content">
+<div class="lg:col-span-8">
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">
+<th class="px-6 py-4 font-semibold">Product</th>
+<th class="px-6 py-4 font-semibold hidden md:table-cell">Price</th>
+<th class="px-6 py-4 font-semibold">Qty</th>
+<th class="px-6 py-4 font-semibold">Total</th>
+<th class="px-6 py-4 font-semibold text-right"></th>
+</tr>
+</thead>
+<tbody id="cart-items-body" class="divide-y divide-outline-variant"></tbody>
+</table>
+</div>
+</div>
+<div class="mt-stack-md flex justify-between items-center">
+<a href="index.html" class="flex items-center gap-2 text-primary font-button hover:underline group cursor-pointer">
+<span class="material-symbols-outlined transition-transform group-hover:-translate-x-1">arrow_back</span>
+Continue Shopping
+</a>
+<button id="clear-cart-btn" class="text-on-secondary-container font-label-sm hover:text-error transition-colors">Clear Cart</button>
+</div>
+</div>
+
+<aside class="lg:col-span-4">
+<div class="bg-surface-container-high rounded-xl p-stack-md shadow-sm border border-outline-variant sticky top-24">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-stack-md">Order Summary</h2>
+<div class="space-y-4 mb-stack-lg">
+<div class="flex justify-between items-center text-on-secondary-container">
+<span class="font-body-md">Subtotal</span>
+<span id="summary-subtotal" class="font-button text-on-surface">Ksh 0.00</span>
+</div>
+<div class="pt-4 border-t border-outline-variant flex justify-between items-center">
+<span class="font-headline-md text-headline-md text-on-surface">Total</span>
+<span id="summary-total" class="font-headline-md text-headline-md text-primary">Ksh 0.00</span>
+</div>
+</div>
+<button id="checkout-btn" class="w-full bg-primary-container text-on-primary-container py-4 rounded-xl font-button text-button shadow-lg hover:shadow-primary-container/20 hover:scale-[1.02] active:scale-95 transition-all mb-4">
+                        Proceed to Checkout
+                    </button>
+<div class="flex flex-col gap-3">
+<div class="flex items-center gap-2 text-label-sm text-on-secondary-container">
+<span class="material-symbols-outlined text-sm">verified_user</span>
+Secure checkout powered by Stripe
+</div>
+</div>
+</div>
+</aside>
+</div>
+
+<div class="hidden flex-col items-center justify-center py-stack-lg text-center" id="empty-state">
+<div class="w-64 h-64 mb-stack-md bg-surface-container rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-[80px] text-outline opacity-40">shopping_basket</span>
+</div>
+<h2 class="font-display-lg text-display-lg mb-2">Your cart is empty</h2>
+<p class="text-on-secondary-container font-body-md max-w-md mx-auto mb-stack-lg">
+                Looks like you haven't added any tech masterpieces to your cart yet. Browse our latest arrivals and find something amazing.
+            </p>
+<a href="index.html" class="inline-block bg-primary text-on-primary px-8 py-4 rounded-xl font-button shadow-md hover:shadow-lg hover:bg-primary-container transition-all active:scale-95">
+                Shop Catalog
+            </a>
+</div>
+</main>
+
+<footer class="w-full py-stack-lg px-margin-mobile md:px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-gutter bg-surface-container-highest">
+<span class="font-headline-md text-headline-md text-on-surface font-bold">TechNexus</span>
+<p class="text-on-secondary-container font-label-sm text-label-sm">© 2026 TechNexus Inc. All rights reserved.</p>
+</footer>
+
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/ui.js"></script>
+<script>
+function cartRowHtml(item) {
+  const imgUrl = `https://source.unsplash.com/80x80/?tech,gadget&sig=${item.productId}`;
+  return `
+    <tr class="group hover:bg-surface-bright transition-colors" data-item-id="${item.id}">
+      <td class="px-6 py-6">
+        <div class="flex items-center gap-stack-md">
+          <a href="product.html?id=${item.productId}" class="w-20 h-20 flex-shrink-0 bg-surface-container-high rounded-lg overflow-hidden border border-outline-variant">
+            <img class="w-full h-full object-cover" src="${imgUrl}" alt="${item.productName}"/>
+          </a>
+          <div>
+            <a href="product.html?id=${item.productId}" class="font-button text-on-surface hover:text-primary transition-colors">${item.productName}</a>
+          </div>
+        </div>
+      </td>
+      <td class="px-6 py-6 hidden md:table-cell">
+        <span class="font-body-md text-on-surface">${formatCents(item.unitPriceCents)}</span>
+      </td>
+      <td class="px-6 py-6">
+        <div class="flex items-center border border-outline rounded-lg w-fit overflow-hidden">
+          <button class="qty-decrement px-3 py-1 hover:bg-surface-variant transition-colors text-on-surface" data-id="${item.id}" data-product="${item.productId}" data-qty="${item.quantity}">-</button>
+          <span class="px-4 py-1 font-button text-on-surface border-x border-outline">${item.quantity}</span>
+          <button class="qty-increment px-3 py-1 hover:bg-surface-variant transition-colors text-on-surface" data-id="${item.id}" data-product="${item.productId}" data-qty="${item.quantity}" data-stock="${item.availableStock}">+</button>
+        </div>
+      </td>
+      <td class="px-6 py-6">
+        <span class="font-button text-primary">${formatCents(item.lineTotalCents)}</span>
+      </td>
+      <td class="px-6 py-6 text-right">
+        <button class="remove-item material-symbols-outlined text-outline hover:text-error transition-colors cursor-pointer p-1" data-id="${item.id}">delete</button>
+      </td>
+    </tr>
+  `;
+}
+
+async function loadCart() {
+  if (!Auth.isLoggedIn()) {
+    window.location.href = 'login.html?next=cart.html';
+    return;
+  }
+
+  const loading = document.getElementById('cart-loading');
+  const content = document.getElementById('cart-content');
+  const empty = document.getElementById('empty-state');
+
+  try {
+    const items = await Api.getCart();
+    loading.classList.add('hidden');
+
+    if (items.length === 0) {
+      content.classList.add('hidden');
+      content.classList.remove('grid');
+      empty.classList.remove('hidden');
+      empty.classList.add('flex');
+      return;
+    }
+
+    content.classList.remove('hidden');
+    content.classList.add('grid');
+    empty.classList.add('hidden');
+    empty.classList.remove('flex');
+
+    document.getElementById('cart-items-body').innerHTML = items.map(cartRowHtml).join('');
+
+    const subtotal = items.reduce((sum, i) => sum + i.lineTotalCents, 0);
+    document.getElementById('summary-subtotal').textContent = formatCents(subtotal);
+    document.getElementById('summary-total').textContent = formatCents(subtotal);
+
+    document.querySelectorAll('.qty-increment').forEach(btn => btn.addEventListener('click', async (e) => {
+      const { product, qty, stock } = e.currentTarget.dataset;
+      if (Number(qty) >= Number(stock)) {
+        showToast("That's all the stock we have", 'error');
+        return;
+      }
+      await Api.addOrUpdateCartItem(Number(product), Number(qty) + 1);
+      loadCart(); refreshCartCount();
+    }));
+
+    document.querySelectorAll('.qty-decrement').forEach(btn => btn.addEventListener('click', async (e) => {
+      const { id, product, qty } = e.currentTarget.dataset;
+      const newQty = Number(qty) - 1;
+      if (newQty <= 0) await Api.removeCartItem(Number(id));
+      else await Api.addOrUpdateCartItem(Number(product), newQty);
+      loadCart(); refreshCartCount();
+    }));
+
+    document.querySelectorAll('.remove-item').forEach(btn => btn.addEventListener('click', async (e) => {
+      await Api.removeCartItem(Number(e.currentTarget.dataset.id));
+      showToast('Removed from cart');
+      loadCart(); refreshCartCount();
+    }));
+
+  } catch (err) {
+    loading.classList.add('hidden');
+    showToast(err.message || 'Could not load cart', 'error');
+  }
+}
+
+document.getElementById('clear-cart-btn').addEventListener('click', async () => {
+  if (!confirm('Remove all items from your cart?')) return;
+  await Api.clearCart();
+  loadCart(); refreshCartCount();
+});
+
+document.getElementById('checkout-btn').addEventListener('click', () => {
+  window.location.href = 'checkout.html';
+});
+
+document.addEventListener('DOMContentLoaded', loadCart);
+</script>
+</body>
+</html>

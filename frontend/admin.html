@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TechNexus | Admin Panel</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Geist:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="js/tailwind-config.js"></script>
+<link rel="stylesheet" href="css/styles.css"/>
+</head>
+<body class="bg-background text-on-background min-h-screen">
+
+<aside class="hidden lg:flex flex-col h-screen fixed left-0 top-0 border-r border-outline-variant bg-surface-container-low w-64 z-30">
+<div class="px-6 py-8">
+<h1 class="font-headline-md text-headline-md text-on-surface font-bold tracking-tight">TechNexus</h1>
+<p class="text-on-surface-variant font-label-sm text-label-sm mt-1">Admin Panel</p>
+</div>
+<nav class="flex-1 px-4 space-y-2">
+<span class="flex items-center gap-stack-md px-4 py-3 bg-primary-container text-on-primary-container rounded-lg font-bold">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-sm text-label-sm">Dashboard</span>
+</span>
+</nav>
+<div class="p-4 border-t border-outline-variant">
+<div class="flex items-center gap-3 p-2">
+<div id="admin-initials" class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-primary font-bold">--</div>
+<div>
+<p id="admin-email" class="text-on-surface font-label-sm text-label-sm font-bold">—</p>
+<p class="text-on-surface-variant text-[12px]">System Admin</p>
+</div>
+</div>
+<a href="index.html" class="block w-full mt-4 py-2 px-4 bg-primary text-white font-button rounded-lg text-sm text-center hover:opacity-90 active:scale-95 transition-all">
+View Store
+</a>
+</div>
+</aside>
+
+<main class="lg:ml-64 min-h-screen">
+<header class="sticky top-0 z-20 flex justify-between items-center px-margin-mobile md:px-margin-desktop h-20 w-full bg-surface shadow-sm">
+<h2 class="font-headline-md text-headline-md font-bold text-on-surface">Dashboard</h2>
+<button class="bg-primary text-on-primary px-4 py-2 rounded-lg font-button flex items-center gap-2 transition-transform duration-200 active:scale-95 shadow-md" id="add-product-btn">
+<span class="material-symbols-outlined">add</span>
+<span class="hidden sm:inline">Add Product</span>
+</button>
+</header>
+
+<div class="p-margin-mobile md:p-margin-desktop space-y-stack-lg max-w-container-max mx-auto">
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<div class="glass-card p-6 rounded-xl shadow-sm">
+<p class="text-on-secondary-container font-label-sm text-label-sm">Total Orders</p>
+<h3 id="stat-orders" class="font-display-lg text-3xl font-bold mt-2 text-on-surface">—</h3>
+</div>
+<div class="glass-card p-6 rounded-xl shadow-sm">
+<p class="text-on-secondary-container font-label-sm text-label-sm">Total Revenue</p>
+<h3 id="stat-revenue" class="font-display-lg text-3xl font-bold mt-2 text-on-surface">—</h3>
+</div>
+<div class="glass-card p-6 rounded-xl shadow-sm">
+<p class="text-on-secondary-container font-label-sm text-label-sm">Low Stock Items</p>
+<h3 id="stat-lowstock" class="font-display-lg text-3xl font-bold mt-2 text-on-surface">—</h3>
+<div class="mt-4 flex items-center text-tertiary text-sm font-bold">
+<span class="material-symbols-outlined text-sm mr-1">warning</span>
+Requires attention
+</div>
+</div>
+</div>
+
+<section class="space-y-stack-md">
+<h4 class="font-headline-md text-on-surface">Inventory Management</h4>
+<div class="bg-surface rounded-xl border border-outline-variant overflow-hidden shadow-sm">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-outline-variant">
+<th class="px-6 py-4 font-label-sm text-on-surface-variant uppercase text-[12px]">Product</th>
+<th class="px-6 py-4 font-label-sm text-on-surface-variant uppercase text-[12px]">SKU</th>
+<th class="px-6 py-4 font-label-sm text-on-surface-variant uppercase text-[12px]">Price</th>
+<th class="px-6 py-4 font-label-sm text-on-surface-variant uppercase text-[12px]">Stock</th>
+<th class="px-6 py-4 font-label-sm text-on-surface-variant uppercase text-[12px]">Status</th>
+<th class="px-6 py-4 font-label-sm text-on-surface-variant uppercase text-[12px]">Actions</th>
+</tr>
+</thead>
+<tbody id="products-body" class="divide-y divide-outline-variant">
+<tr><td colspan="6" class="px-6 py-8 text-center text-on-secondary-container">Loading…</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+
+<section class="space-y-stack-md">
+<h4 class="font-headline-md text-on-surface">Recent Orders</h4>
+<div class="bg-surface rounded-xl border border-outline-variant overflow-hidden shadow-sm">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-outline-variant">
+<th class="px-6 py-4 font-label-sm text-on-surface-variant uppercase text-[12px]">Order ID</th>
+<th class="px-6 py-4 font-label-sm text-on-surface-variant uppercase text-[12px]">Date</th>
+<th class="px-6 py-4 font-label-sm text-on-surface-variant uppercase text-[12px]">Status</th>
+<th class="px-6 py-4 font-label-sm text-on-surface-variant uppercase text-[12px]">Total</th>
+</tr>
+</thead>
+<tbody id="orders-body" class="divide-y divide-outline-variant">
+<tr><td colspan="4" class="px-6 py-8 text-center text-on-secondary-container">Loading…</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+
+<footer class="w-full py-stack-lg px-margin-mobile md:px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-gutter border-t border-outline-variant bg-surface-container-highest mt-12">
+<h3 class="font-headline-md text-on-surface font-bold">TechNexus</h3>
+<p class="font-label-sm text-label-sm text-on-secondary-container">© 2026 TechNexus Inc. All rights reserved.</p>
+</footer>
+</main>
+
+<div class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-on-background/40 backdrop-blur-sm" id="add-product-modal">
+<div class="bg-surface w-full max-w-lg rounded-xl shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
+<div class="px-6 py-4 bg-surface-container-high flex justify-between items-center">
+<h3 id="modal-title" class="font-headline-md text-on-surface">Add New Product</h3>
+<button class="p-1 hover:bg-surface-variant rounded-full transition-colors" id="close-modal">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<form id="product-form" class="p-6 space-y-4">
+<input type="hidden" id="p-id"/>
+<div class="space-y-1">
+<label class="font-label-sm text-on-surface-variant text-[12px] uppercase font-bold">Product Name</label>
+<input id="p-name" class="w-full rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all px-4 py-2" placeholder="e.g. Nexus Buds Pro" type="text" required/>
+</div>
+<div class="space-y-1">
+<label class="font-label-sm text-on-surface-variant text-[12px] uppercase font-bold">Description</label>
+<textarea id="p-description" rows="2" class="w-full rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all px-4 py-2 resize-none"></textarea>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-1">
+<label class="font-label-sm text-on-surface-variant text-[12px] uppercase font-bold">Price (cents)</label>
+<input id="p-price" class="w-full rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all px-4 py-2" placeholder="0" type="number" min="0" required/>
+</div>
+<div class="space-y-1">
+<label class="font-label-sm text-on-surface-variant text-[12px] uppercase font-bold">Stock Quantity</label>
+<input id="p-stock" class="w-full rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all px-4 py-2" placeholder="0" type="number" min="0" required/>
+</div>
+</div>
+<div class="space-y-1">
+<label class="font-label-sm text-on-surface-variant text-[12px] uppercase font-bold">SKU Code</label>
+<input id="p-sku" class="w-full rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all px-4 py-2" placeholder="SKU-XXX-000" type="text" required/>
+</div>
+<div class="space-y-1">
+<label class="font-label-sm text-on-surface-variant text-[12px] uppercase font-bold">Category ID</label>
+<input id="p-category" class="w-full rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all px-4 py-2" placeholder="1" type="number" min="1" required/>
+</div>
+<div class="pt-4 flex gap-3">
+<button class="flex-1 py-2 rounded-lg border border-outline-variant text-on-surface font-button hover:bg-surface-variant transition-colors" id="cancel-modal" type="button">Cancel</button>
+<button class="flex-1 py-2 rounded-lg bg-primary text-on-primary font-button hover:opacity-90 active:scale-95 transition-all" type="submit">Save Product</button>
+</div>
+</form>
+</div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script>
+let productsCache = [];
+
+const statusClass = (status) => ({
+  PENDING: 'status-amber', PAID: 'status-green', SHIPPED: 'status-blue',
+  DELIVERED: 'status-green', CANCELLED: 'status-red', FAILED: 'status-red',
+}[status] || 'status-amber');
+
+async function guardAdmin() {
+  const user = Auth.getUser();
+  if (!Auth.isLoggedIn() || user?.role !== 'ADMIN') {
+    window.location.href = 'index.html';
+    return false;
+  }
+  document.getElementById('admin-email').textContent = user.email;
+  document.getElementById('admin-initials').textContent = user.email.slice(0, 2).toUpperCase();
+  return true;
+}
+
+async function loadProducts() {
+  const tbody = document.getElementById('products-body');
+  try {
+    const page = await Api.listProducts(0, 100);
+    productsCache = page.content || page;
+
+    if (productsCache.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-on-secondary-container">No products yet.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = productsCache.map(p => `
+      <tr class="hover:bg-surface-container transition-colors">
+        <td class="px-6 py-4">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded bg-surface-variant flex-shrink-0 overflow-hidden border border-outline-variant">
+              <img class="w-full h-full object-cover" src="https://source.unsplash.com/48x48/?tech,gadget&sig=${p.id}" alt="${p.name}"/>
+            </div>
+            <div>
+              <p class="font-body-md text-on-surface font-bold">${p.name}</p>
+              <p class="text-[12px] text-on-surface-variant">${p.categoryName || ''}</p>
+            </div>
+          </div>
+        </td>
+        <td class="px-6 py-4 font-body-md text-on-surface-variant">${p.sku}</td>
+        <td class="px-6 py-4 font-body-md text-on-surface">${formatCents(p.priceCents)}</td>
+        <td class="px-6 py-4 font-body-md text-on-surface">${p.stockQuantity}</td>
+        <td class="px-6 py-4">
+          <span class="${p.active ? 'status-green' : 'status-red'} px-3 py-1 rounded-full text-[12px] font-bold">${p.active ? 'Active' : 'Inactive'}</span>
+        </td>
+        <td class="px-6 py-4 space-x-3 whitespace-nowrap">
+          <button class="edit-btn text-primary font-bold text-sm hover:underline" data-id="${p.id}">Edit</button>
+          <button class="deactivate-btn text-error font-bold text-sm hover:underline" data-id="${p.id}">Deactivate</button>
+        </td>
+      </tr>
+    `).join('');
+
+    document.getElementById('stat-lowstock').textContent =
+      productsCache.filter(p => p.stockQuantity > 0 && p.stockQuantity <= 5).length;
+
+    tbody.querySelectorAll('.edit-btn').forEach(btn => btn.addEventListener('click', () => openModal(Number(btn.dataset.id))));
+    tbody.querySelectorAll('.deactivate-btn').forEach(btn => btn.addEventListener('click', () => deactivateProduct(Number(btn.dataset.id))));
+
+  } catch (err) {
+    tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-on-secondary-container">Couldn't load products.</td></tr>`;
+  }
+}
+
+async function loadOrders() {
+  const tbody = document.getElementById('orders-body');
+  try {
+    const orders = await Api.allOrdersAdmin();
+    document.getElementById('stat-orders').textContent = orders.length;
+    const revenue = orders.filter(o => ['PAID', 'SHIPPED', 'DELIVERED'].includes(o.status))
+      .reduce((sum, o) => sum + o.totalAmountCents, 0);
+    document.getElementById('stat-revenue').textContent = formatCents(revenue);
+
+    if (orders.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="4" class="px-6 py-8 text-center text-on-secondary-container">No orders yet.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = orders.map(o => `
+      <tr class="hover:bg-surface-container transition-colors">
+        <td class="px-6 py-4 font-body-md text-primary font-bold">#${o.id}</td>
+        <td class="px-6 py-4 font-body-md text-on-surface-variant">${new Date(o.createdAt).toLocaleDateString()}</td>
+        <td class="px-6 py-4"><span class="${statusClass(o.status)} px-3 py-1 rounded-full text-[12px] font-bold">${o.status}</span></td>
+        <td class="px-6 py-4 font-body-md text-on-surface font-bold">${formatCents(o.totalAmountCents)}</td>
+      </tr>
+    `).join('');
+  } catch (err) {
+    tbody.innerHTML = `<tr><td colspan="4" class="px-6 py-8 text-center text-on-secondary-container">Couldn't load orders.</td></tr>`;
+  }
+}
+
+function openModal(id) {
+  const modal = document.getElementById('add-product-modal');
+  const form = document.getElementById('product-form');
+  form.reset();
+
+  if (id) {
+    const p = productsCache.find(x => x.id === id);
+    document.getElementById('p-id').value = p.id;
+    document.getElementById('p-name').value = p.name;
+    document.getElementById('p-description').value = p.description || '';
+    document.getElementById('p-price').value = p.priceCents;
+    document.getElementById('p-stock').value = p.stockQuantity;
+    document.getElementById('p-sku').value = p.sku;
+    document.getElementById('p-category').value = p.categoryId;
+    document.getElementById('modal-title').textContent = 'Edit Product';
+  } else {
+    document.getElementById('p-id').value = '';
+    document.getElementById('modal-title').textContent = 'Add New Product';
+  }
+
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+}
+
+function closeModal() {
+  const modal = document.getElementById('add-product-modal');
+  modal.classList.add('hidden');
+  modal.classList.remove('flex');
+}
+
+async function deactivateProduct(id) {
+  if (!confirm('Deactivate this product? It will no longer appear in the catalog.')) return;
+  try {
+    await Api.deactivateProduct(id);
+    loadProducts();
+  } catch (err) {
+    alert(err.message || 'Could not deactivate product');
+  }
+}
+
+document.getElementById('product-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const id = document.getElementById('p-id').value;
+  const payload = {
+    name: document.getElementById('p-name').value,
+    description: document.getElementById('p-description').value,
+    priceCents: Number(document.getElementById('p-price').value),
+    stockQuantity: Number(document.getElementById('p-stock').value),
+    sku: document.getElementById('p-sku').value,
+    categoryId: Number(document.getElementById('p-category').value),
+  };
+
+  try {
+    if (id) await Api.updateProduct(Number(id), payload);
+    else await Api.createProduct(payload);
+    closeModal();
+    loadProducts();
+  } catch (err) {
+    alert(err.message || 'Could not save product');
+  }
+});
+
+document.getElementById('add-product-btn').addEventListener('click', () => openModal(null));
+document.getElementById('close-modal').addEventListener('click', closeModal);
+document.getElementById('cancel-modal').addEventListener('click', closeModal);
+document.getElementById('add-product-modal').addEventListener('click', (e) => {
+  if (e.target.id === 'add-product-modal') closeModal();
+});
+
+(async () => {
+  if (!(await guardAdmin())) return;
+  loadProducts();
+  loadOrders();
+})();
+</script>
+</body>
+</html>

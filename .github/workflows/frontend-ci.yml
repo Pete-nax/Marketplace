@@ -1,0 +1,40 @@
+name: Frontend CI
+
+on:
+  push:
+    branches: [main]
+    paths: ["frontend/**"]
+  pull_request:
+    branches: [main]
+    paths: ["frontend/**"]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Catches the single most likely deploy mistake for this project: pushing
+      # to main with js/config.js still pointing at the placeholder backend URL
+      # or Stripe key from the template.
+      - name: Guard against placeholder config values
+        run: |
+          if grep -q "REPLACE-WITH-YOUR-BACKEND-URL\|pk_test_REPLACE_ME" js/config.js; then
+            echo "::error file=frontend/js/config.js::config.js still has placeholder values. Set API_BASE_URL and STRIPE_PUBLISHABLE_KEY to your real deployed values before merging to main."
+            exit 1
+          fi
+
+      - name: Check for obviously broken HTML (unclosed script/html tags)
+        run: |
+          for f in *.html; do
+            open_script=$(grep -o '<script' "$f" | wc -l)
+            close_script=$(grep -o '</script>' "$f" | wc -l)
+            if [ "$open_script" -ne "$close_script" ]; then
+              echo "::error file=frontend/$f::Mismatched <script> tags ($open_script open vs $close_script closed)"
+              exit 1
+            fi
+          done
