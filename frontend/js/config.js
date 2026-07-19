@@ -5,8 +5,8 @@
 // be exposed client-side (never put your Stripe *secret* key here).
 // ============================================================
 
-// Your deployed backend URL (Render/Fly/etc). No trailing slash.
-window.API_BASE_URL = 'https://REPLACE-WITH-YOUR-BACKEND-URL.onrender.com';
+// Your deployed backend URL (Render/Fly/etc)
+window.API_BASE_URL = 'https://ecommerce-backend-nlus.onrender.com';
 
 // Your Stripe publishable key from https://dashboard.stripe.com/apikeys
 window.STRIPE_PUBLISHABLE_KEY = 'pk_test_REPLACE_ME';
