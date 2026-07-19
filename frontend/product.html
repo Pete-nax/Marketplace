@@ -76,7 +76,7 @@ async function initProductDetail() {
 
     const outOfStock = p.stockQuantity <= 0;
     const lowStock = p.stockQuantity > 0 && p.stockQuantity <= 5;
-    const imgUrl = `https://source.unsplash.com/700x700/?${encodeURIComponent(p.categoryName || 'tech')},gadget&sig=${p.id}`;
+    const imgUrl = p.imageUrl || `https://picsum.photos/seed/${p.id}/700/700`;
 
     root.innerHTML = `
       <div class="lg:col-span-7 space-y-stack-md">

@@ -199,7 +199,7 @@ async function loadProducts() {
         <td class="px-6 py-4">
           <div class="flex items-center gap-4">
             <div class="w-12 h-12 rounded bg-surface-variant flex-shrink-0 overflow-hidden border border-outline-variant">
-              <img class="w-full h-full object-cover" src="https://source.unsplash.com/48x48/?tech,gadget&sig=${p.id}" alt="${p.name}"/>
+              <img class="w-full h-full object-cover" src="${p.imageUrl || `https://picsum.photos/seed/${p.id}/48/48`}" alt="${p.name}"/>
             </div>
             <div>
               <p class="font-body-md text-on-surface font-bold">${p.name}</p>

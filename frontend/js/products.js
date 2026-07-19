@@ -9,12 +9,13 @@ let sortMode = 'featured';
 
 function productCardHtml(p) {
   const outOfStock = p.stockQuantity <= 0;
+  const imgUrl = p.imageUrl || `https://picsum.photos/seed/${p.id}/400/400`;
 
   return `
     <article class="bg-surface-container-lowest rounded-xl border border-outline-variant flex flex-col product-card-shadow transition-all group overflow-hidden">
       <a href="product.html?id=${p.id}" class="relative aspect-square bg-[#F8FAFC] overflow-hidden block">
         <img class="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-500"
-             src="https://source.unsplash.com/400x400/?${encodeURIComponent(p.categoryName || 'tech')},gadget&sig=${p.id}" alt="${p.name}" loading="lazy"/>
+             src="${imgUrl}" alt="${p.name}" loading="lazy"/>
         <span class="absolute top-3 left-3 bg-primary-container text-on-primary-container text-[10px] font-bold px-2 py-1 rounded uppercase tracking-widest">${p.categoryName || ''}</span>
         ${outOfStock ? '<div class="absolute inset-0 bg-white/70 flex items-center justify-center"><span class="bg-error-container text-on-error-container text-xs font-bold px-3 py-1 rounded-full">Out of Stock</span></div>' : ''}
       </a>
